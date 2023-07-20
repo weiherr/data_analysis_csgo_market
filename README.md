@@ -3,69 +3,8 @@
 ============================
 
 ## Python/Data Analytics Journey Content: ##
-- [0 Sample](#sample)
 - [1 Get All Item](#item-one)
 - [2 Examine Item Data](#item-two)
-
-<!-- headings -->
-<a id="sample"></a>
-
-## 0 Sample ##
-
-<h3 style="font-size:18px">0.1 Skills Showcased</h3>
-#Skill1 &ensp; #Skill2
-
-<h3 style="font-size:18px">0.2 Coding Journey</h3>
-<details>
-<summary>[Expand]</summary>
-
-First paragraph.
-
-- Challenge 1 - Sample Challenge
-    Sample para
-    
-    **Solution and Other Interesting Find**
-    
-    Sample para.
-    - <a href="https://www.google.com">Google</a>
-    - <a href="https://www.yahoo.com">Yahoo</a>
-
-    Sample para. `CODE`
-
-    Sample para.
-
-    **EMPHASIS!**
-    
-    <details>
-    <summary>[Expand for code]</summary>
-
-    ```python
-    print("Hello world!")
-    ```
-    </details>
-<br>
-
-- ​Challenge 2 - Sample Challenge
-    Sample para
-
-    1. Sample para. <br>
-    **Solution:** `CODE` sample.
-
-    2. Sample para. <br>
-    **Solution:** `CODE` sample.
-
-    Sample para.
-
-    <details>
-    <summary>[Expand for code]</summary>
-
-    ```python
-    print("Hello World Again!")
-    ```
-    </details>
-
-[[back to top]](#top)
-</details>
 
 <a id="get-all-item"></a>
 
