@@ -1,5 +1,5 @@
 <a id="top"></a>
-CS:GO Steam Market Analaysis
+(WORK IN PROGRESS) CS:GO Steam Market Analaysis
 ============================
 
 ## Python/Data Analytics Journey Content: ##
