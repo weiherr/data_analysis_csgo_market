@@ -4,6 +4,7 @@
 
 <h3 style="font-size:18px">2.2 Coding Reflection</h3>
 <p>
+
 Before we proceed to extract the price history of all the necessary items, it is important to examine the dataset that was retrieved. I will attempt to summarize the important categorizations of skins below, but if you require further information, it can be found in the wiki page [here](https://counterstrike.fandom.com/wiki/Skins). Feel free to skip if you have some background on this.
 
 <details>
