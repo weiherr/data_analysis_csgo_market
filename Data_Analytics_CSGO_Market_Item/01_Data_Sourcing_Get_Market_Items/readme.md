@@ -43,8 +43,8 @@ As this is the start of my "bigger" personal coding/data analytics project, I wi
 
     DIR = "./data/item_list/" # directory to save the file
     now = dt.datetime.now() # get datetime information as file name
-    extraction_start = str(now.year)+str(now.month).zfill(2)+str(now.day).zfill(2)+"T"+str(now.hour).zfill(2)+""+str(now.minute).zfill(2)
-    filename = extraction_start + "_trial_v3.csv"
+    extraction_start = str(now.year)+str(now.month).zfill(2)+str(now.day).zfill(2)+"_"+str(now.hour).zfill(2)+""+str(now.minute).zfill(2)
+    filename = extraction_start + "_item_list.csv"
     filedir = DIR + filename
     # print(filedir) # can print to see what is the file directory + name
 
