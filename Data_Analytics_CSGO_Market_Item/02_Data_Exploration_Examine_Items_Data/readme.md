@@ -4,6 +4,8 @@
 
 Explored dataset with common `pandas` data exploration methods like `df.shape`, `df.info()`, `df.head()`, `df.describe(include="all")`. Drilled down data further through methods like `df.iloc`, `df.unique()`, conditional filtering and groupby to uncover details regarding the data to provide information for the next data cleaning/transformation step.
 
+**Skills Showcased**: Python (pandas), Jupyter Notebook, Descriptive Statistics
+
 <h3 style="font-size:18px">2.2 Code/Notebook Link</h3>
 
 The github depository link for my code is located [here](https://github.com/weiherr/data_analysis_csgo_market/blob/main/Data_Analytics_CSGO_Market_Item/02_Data_Exploration_Examine_Items_Data/02%20data_exploration.ipynb). Please refer to the notebook for detailed analysis as the notebook tool is useful in explaining steps with visualization of data.

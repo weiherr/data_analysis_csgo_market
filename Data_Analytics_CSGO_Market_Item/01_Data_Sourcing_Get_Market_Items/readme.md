@@ -4,6 +4,8 @@
 
 Sourced data from STEAM Market's API using `urllib` and `requests` library, along with `time` to limit put pause to the code if it reaches the API call threshold set by STEAM. Data is then processed through accessing different data types (e.g. `JSON`, `dictionary`, `list`), using `pandas`' DataFrame to save as a csv file.
 
+**Skills Showcased**: Python (pandas, urllib, requests, Exception Handling), API, HTML
+
 <h3 style="font-size:18px">1.2 Code/Notebook Link</h3>
 
 The github depository link for the code related to this section is located [here](https://github.com/weiherr/data_analysis_csgo_market/blob/main/Data_Analytics_CSGO_Market_Item/01_Data_Sourcing_Get_Market_Items/01%20get_item_list.py).

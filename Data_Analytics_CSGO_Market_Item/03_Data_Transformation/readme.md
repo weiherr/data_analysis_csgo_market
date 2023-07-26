@@ -6,6 +6,8 @@ Generated multiple categories through string manipulation of `market_hash_name` 
 
 Utilized Excel's Power Query to extract and transform the remaining skin data that were absent in the extracted list from [Counter Strike Fandom Website](https://counterstrike.fandom.com/wiki/Skins/List). Made the assumption that each skin name should have 5 skin wear, and each skin name should have its StatTrak counterpart.
 
+**Skills Showcased**: Python (pandas, String Manipulation), Power Query, M Language
+
 <h3 style="font-size:18px">3.2 Code Link</h3>
 
 The github depository link for my code is located [here](https://test.com).
