@@ -5,6 +5,12 @@ df = pd.read_csv("./data/item_list/20230725_0741_item_list.csv")
 
 ### ----------------- FUNCTIONS --------------------- ###
 def get_skin_name(input_string) -> str:
+    '''
+    Takes string input from "market_hash_name" column, remove the skin wear part of the string.
+    Returns the skin name.
+    
+    Example: Input "AWP | Dragon Lore (Minimal Wear)" -> returns "AWP | Dragon Lore"
+    '''
     skin_wear_list = [" (Factory New)", " (Minimal Wear)", " (Field-Tested)", " (Well-Worn)", " (Battle-Scarred)"]
     for skin_wear in skin_wear_list:
         if input_string.find(skin_wear) >= 0:
@@ -16,6 +22,12 @@ def get_skin_name(input_string) -> str:
     return skin_name
 
 def get_skin_type_category(input_string) -> str:
+    '''
+    Takes string input from "skin_type" column, split the string on space (" "), 
+    then select only the necessary words based on criteria. Returns skin type category.
+
+    Example: Input "Covert Sniper Rifle" -> returns "Sniper Rifle"
+    '''
     string_word_list = input_string.split(" ")
     if "Music" in string_word_list:
         skin_type_category = " ".join(string_word_list[-2:])
@@ -26,6 +38,12 @@ def get_skin_type_category(input_string) -> str:
     return skin_type_category
 
 def get_totally_new_skin_type_cat(input_string) -> str:
+    '''
+    Returns skin type category by matching the string from "weapon_type" column. 
+    Note: Only checks for Rifles, Machinegun, Sniper Rifle, Shotgun, SMG and Pistol as this function is added after the addition of missing items from the CS:GO Fandom Wiki
+
+    Example: Input "AUG" -> returns "Rifle"
+    '''
     rifle = ["AUG","FAMAS","AK-47","M4A4","SG 553","Galil AR","M4A1-S"]
     machinegun = ["M249","Negev"]
     sniperrifle = ["SSG 08","G3SG1","SCAR-20","AWP"]
@@ -45,8 +63,18 @@ def get_totally_new_skin_type_cat(input_string) -> str:
         return "SMG"
     elif input_string in pistol:
         return "Pistol"
+    else:
+        return "Unknown Weapon Type"
 
 def get_analysis_type(input_string) -> bool:
+    '''
+    Checks whether "weapon_type" column's string is part of the listed weapon type for future analysis.
+
+    Weapon types included in the list are:
+    "Sniper Rifle", "Rifle", "SMG", "Shotgun", "Pistol", "Machinegun", "Knife", "Gloves"
+
+    Returns True if is part of the list, False if not.
+    '''
     analysis_type = ["Sniper Rifle", "Rifle", "SMG", "Shotgun", "Pistol", "Machinegun", "Knife", "Gloves"]
     if input_string in analysis_type:
         return True
@@ -54,6 +82,11 @@ def get_analysis_type(input_string) -> bool:
         return False
 
 def get_skin_grade(input_string) -> str:
+    '''
+    Takes string input from "skin_type" column, depending on the string structure, returns the skin grade through string manipulation.
+
+    Example: Input "Master Agent" -> returns "Master"
+    '''
     string_word_list = input_string.split(" ")
     if "StatTrak™" in string_word_list and "★" in string_word_list:
         skin_grade = " ".join(string_word_list[2:(len(string_word_list)-1)])
@@ -74,6 +107,11 @@ def get_skin_grade(input_string) -> str:
     return skin_grade
 
 def get_weapon_type(input_string) -> str:
+    '''
+    Takes string input from "market_hash_name" column, return weapon type through string manipulation.
+
+    Example: Input "StatTrak™ Sawed-Off | Zander (Field-Tested)" -> return "Sawed-Off"
+    '''
     slice_end = input_string.find("|")
     if slice_end != -1:
         weapon_type = input_string[0:slice_end-1]
@@ -98,6 +136,11 @@ def get_weapon_type(input_string) -> str:
     return weapon_type
 
 def get_skin_wear(input_string) -> str:
+    '''
+    Takes string input from "market_hash_name" column, return skin wear through string manipulation.
+
+    Example: Input "MAG-7 | Hard Water (Minimal Wear)" -> return "Minimal Wear"
+    '''
     slice_start = input_string.rfind("(")
     slice_end = input_string.rfind(")")
     if slice_end != -1:
@@ -110,6 +153,11 @@ def get_skin_wear(input_string) -> str:
     return wear
     
 def get_skin_quality(input_string) -> str:
+    '''
+    Takes input string from "market_hash_name" column, return skin quality through string manipulation.
+
+    Example: Input "Souvenir AK-47 | Black Laminate (Well-Worn)" -> return "Souvenir"
+    '''
     string_word_list = input_string.split(" ")
     if "Souvenir" in string_word_list:
         skin_type_category = string_word_list[0]
