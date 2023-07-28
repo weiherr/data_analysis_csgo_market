@@ -1,0 +1,105 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/x-ms-odc; charset=utf-8">
+<meta name=ProgId content=ODC.Database>
+<meta name=SourceType content=OLEDB>
+<title>Query - All Collections Expanded</title>
+<xml id=docprops><o:DocumentProperties
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns="http://www.w3.org/TR/REC-html40">
+  <o:Description>Connection to the 'All Collections Expanded' query in the workbook.</o:Description>
+  <o:Name>Query - All Collections Expanded</o:Name>
+ </o:DocumentProperties>
+</xml><xml id=msodc><odc:OfficeDataConnection
+  xmlns:odc="urn:schemas-microsoft-com:office:odc"
+  xmlns="http://www.w3.org/TR/REC-html40">
+  <odc:PowerQueryConnection odc:Type="OLEDB">
+   <odc:ConnectionString>Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=All Collections Expanded;Extended Properties=</odc:ConnectionString>
+   <odc:CommandType>TableCollection</odc:CommandType>
+   <odc:CommandText>&quot;All Collections Expanded&quot;</odc:CommandText>
+  </odc:PowerQueryConnection>
+  <odc:PowerQueryMashupData>&lt;Mashup xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://schemas.microsoft.com/DataMashup&quot;&gt;&lt;Client&gt;EXCEL&lt;/Client&gt;&lt;Version&gt;2.118.202.0&lt;/Version&gt;&lt;MinVersion&gt;2.21.0.0&lt;/MinVersion&gt;&lt;Culture&gt;en-SG&lt;/Culture&gt;&lt;SafeCombine&gt;true&lt;/SafeCombine&gt;&lt;Items&gt;&lt;Query Name=&quot;All Collections Expanded&quot;&gt;&lt;Formula&gt;&lt;![CDATA[let&#13;&#10;    // Get data from source&#13;&#10;    Source = Web.Page(Web.Contents(&quot;https://counterstrike.fandom.com/wiki/Skins/List&quot;)),&#13;&#10;    // Select tables that consists of collections and skins&#13;&#10;    #&quot;Filtered Rows&quot; = Table.SelectRows(Source, each ([ClassName] = &quot;wikitable&quot;)),&#13;&#10;    // Expand each of the table so that the data could be compiled in a long format with repeated collections for each skin&#13;&#10;    #&quot;Expanded Data&quot; = Table.ExpandTableColumn(#&quot;Filtered Rows&quot;, &quot;Data&quot;, {&quot;Weapon&quot;, &quot;Skin&quot;, &quot;Quality&quot;, &quot;Drops&quot;}, {&quot;Weapon&quot;, &quot;Skin&quot;, &quot;Quality&quot;, &quot;Drops&quot;}),&#13;&#10;    // Remove unwanted columns&#13;&#10;    #&quot;Removed Columns&quot; = Table.RemoveColumns(#&quot;Expanded Data&quot;,{&quot;Source&quot;, &quot;ClassName&quot;, &quot;Id&quot;}),&#13;&#10;    // Remove unnecessary texts [] from the Caption column, Rename column to Case&#13;&#10;    #&quot;Removed [] &amp; Renamed Columns&quot; = Table.RenameColumns(Table.TransformColumns(#&quot;Removed Columns&quot;, {{&quot;Caption&quot;, each Text.Remove(_, {&quot;[&quot;,&quot;]&quot;}), type text}}), {&quot;Caption&quot;, &quot;Case&quot;}),&#13;&#10;    // Explain the symbols for Drops column&#13;&#10;    #&quot;Expanded Drops&quot; = Table.AddColumn(#&quot;Removed [] &amp; Renamed Columns&quot;, &quot;Drop Expanded&quot;, each if [Drops] = &quot;†&quot; then &quot;Exclusive to an operation&quot; else if [Drops] = &quot;√&quot; then &quot;Currently in active drop pool&quot; else if [Drops] = &quot;x&quot; then &quot;Not in active drop pool&quot; else null),&#13;&#10;    // Explain the * and ** symbols in Skin Column&#13;&#10;    #&quot;Expanded Skin&quot; = Table.AddColumn(#&quot;Expanded Drops&quot;, &quot;Skin Expanded&quot;, each if Text.Contains([Skin], &quot;**&quot;) then &quot;Removed from case at a later date&quot; else if Text.Contains([Skin], &quot;*&quot;) then &quot;Added at a later date&quot; else null),&#13;&#10;    // Remove * and ** symbols in Skin&#13;&#10;    #&quot;Removed * from Skin&quot; = Table.TransformColumns(#&quot;Expanded Skin&quot;, {{&quot;Skin&quot;, each Text.Remove(_, {&quot;*&quot;}), type text}}),&#13;&#10;    // Add Skin Wear table to each skin so that each skin can be duplicated with each skin wear&#13;&#10;    #&quot;Added Skin Wear Table&quot; = Table.AddColumn(#&quot;Removed * from Skin&quot;, &quot;Skin Wear&quot;, each #&quot;Skin Wear&quot;),&#13;&#10;    // Expand Skin Wear&#13;&#10;    #&quot;Expanded Table&quot; = Table.ExpandTableColumn(#&quot;Added Skin Wear Table&quot;, &quot;Skin Wear&quot;, {&quot;Skin Wear&quot;}, {&quot;Skin Wear&quot;}),&#13;&#10;    // Add ( to skin wear for column for merging purposes&#13;&#10;    #&quot;Added ( string&quot; = Table.TransformColumns(#&quot;Expanded Table&quot;, {{&quot;Skin Wear&quot;, each Text.Insert(_, 0, &quot;(&quot;), type text}}),&#13;&#10;    // Add ) to skin wear for column for merging purposes&#13;&#10;    #&quot;Added ) string&quot; = Table.TransformColumns(#&quot;Added ( string&quot;, {{&quot;Skin Wear&quot;, each Text.Insert(_, Text.Length(_), &quot;)&quot;), type text}}),&#13;&#10;    // Merge Weapon, Skin, Skin Wear to form Market Hash Name column&#13;&#10;    #&quot;Merged W_S_SW Columns&quot; = Table.CombineColumns(Table.CombineColumns(#&quot;Added ) string&quot;,{&quot;Weapon&quot;, &quot;Skin&quot;},Combiner.CombineTextByDelimiter(&quot; | &quot;, QuoteStyle.None),&quot;Merged&quot;), {&quot;Merged&quot;, &quot;Skin Wear&quot;}, Combiner.CombineTextByDelimiter(&quot; &quot;, QuoteStyle.None), &quot;Market Hash Name&quot;),&#13;&#10;    // Add StatTrak table to each market hash name so that each can be duplicated with StatTrak option&#13;&#10;    #&quot;Added StatTrak Table&quot; = Table.AddColumn(#&quot;Merged W_S_SW Columns&quot;, &quot;StatTrak&quot;, each #&quot;StatTrak&quot;),&#13;&#10;    // Expand StatTrak&#13;&#10;    #&quot;Expanded StatTrak&quot; = Table.ExpandTableColumn(#&quot;Added StatTrak Table&quot;, &quot;StatTrak&quot;, {&quot;StatTrak&quot;}, {&quot;StatTrak&quot;}),&#13;&#10;    // Merge Market Hash Name and StatTrak columns, Reorder columns and TRIM Market Hash Name column&#13;&#10;    #&quot;Merged MHN_ST Columns&quot; = Table.TransformColumns(Table.ReorderColumns(Table.CombineColumns(#&quot;Expanded StatTrak&quot;,{&quot;StatTrak&quot;, &quot;Market Hash Name&quot;}, Combiner.CombineTextByDelimiter(&quot; &quot;, QuoteStyle.None), &quot;Market Hash Name&quot;), {&quot;Case&quot;, &quot;Market Hash Name&quot;, &quot;Quality&quot;, &quot;Drops&quot;, &quot;Drop Expanded&quot;, &quot;Skin Expanded&quot;}), {{&quot;Market Hash Name&quot;, Text.Trim, type text}}),&#13;&#10;    // Add Quality Sort Order table for sorting purposes&#13;&#10;    #&quot;Merged Queries&quot; = Table.NestedJoin(#&quot;Merged MHN_ST Columns&quot;, {&quot;Quality&quot;}, #&quot;Quality Sort Order&quot;, {&quot;Quality&quot;}, &quot;Quality Sort Order&quot;, JoinKind.LeftOuter),&#13;&#10;    // Expand Quality Sort Order&#13;&#10;    #&quot;Expanded Quality Sort Order&quot; = Table.ExpandTableColumn(#&quot;Merged Queries&quot;, &quot;Quality Sort Order&quot;, {&quot;Sort Order&quot;}, {&quot;Sort Order&quot;}),&#13;&#10;    // Sort by Case, Quality Sort Order then Market Hash Name&#13;&#10;    #&quot;Sorted Rows&quot; = Table.Sort(#&quot;Expanded Quality Sort Order&quot;,{{&quot;Case&quot;, Order.Ascending},{&quot;Sort Order&quot;, Order.Ascending}, {&quot;Market Hash Name&quot;, Order.Ascending}}),&#13;&#10;    // Remove Sort Order column&#13;&#10;    #&quot;Removed Sort Order Column&quot; = Table.RemoveColumns(#&quot;Sorted Rows&quot;,{&quot;Sort Order&quot;})&#13;&#10;in&#13;&#10;    #&quot;Removed Sort Order Column&quot;]]&gt;&lt;/Formula&gt;&lt;IsParameterQuery xsi:nil=&quot;true&quot; /&gt;&lt;IsDirectQuery xsi:nil=&quot;true&quot; /&gt;&lt;/Query&gt;&lt;Query Name=&quot;Skin Wear&quot;&gt;&lt;Formula&gt;&lt;![CDATA[let&#13;&#10;    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(&quot;i45WcktMLskvqlTwSy1XitWJVvLNzMvMTcxRCE9NLAILuGWm5qTohqQWl6SmgAXCU3NydMPzi/LAPKfEkpKcVN3g5MSiIpCCWAA=&quot;, BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#&quot;Skin Wear&quot; = _t]),&#13;&#10;    #&quot;Changed Type&quot; = Table.TransformColumnTypes(Source,{{&quot;Skin Wear&quot;, type text}})&#13;&#10;in&#13;&#10;    #&quot;Changed Type&quot;]]&gt;&lt;/Formula&gt;&lt;IsParameterQuery xsi:nil=&quot;true&quot; /&gt;&lt;IsDirectQuery xsi:nil=&quot;true&quot; /&gt;&lt;/Query&gt;&lt;Query Name=&quot;StatTrak&quot;&gt;&lt;Formula&gt;&lt;![CDATA[let&#13;&#10;    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(&quot;i45WUorViVYKLkksCSlKzH7UskgpNhYA&quot;, BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [StatTrak = _t]),&#13;&#10;    #&quot;Changed Type&quot; = Table.TransformColumnTypes(Source,{{&quot;StatTrak&quot;, type text}})&#13;&#10;in&#13;&#10;    #&quot;Changed Type&quot;]]&gt;&lt;/Formula&gt;&lt;IsParameterQuery xsi:nil=&quot;true&quot; /&gt;&lt;IsDirectQuery xsi:nil=&quot;true&quot; /&gt;&lt;/Query&gt;&lt;Query Name=&quot;Quality Sort Order&quot;&gt;&lt;Formula&gt;&lt;![CDATA[let&#13;&#10;    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(&quot;i45Wcs7PKy7NTS1ScC9KTElV0lEyVIrViVbyzEspLS4pykzMgUsYgSV8M3N0gwtSk4ECxmCBoFSQuuSS1BSgkAlYyDknsbg4My0TLGQKEcovSy0qAXLNoNy8kqLEpMQ8kApzpdhYAA==&quot;, BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Quality = _t, #&quot;Sort Order&quot; = _t]),&#13;&#10;    #&quot;Changed Type&quot; = Table.TransformColumnTypes(Source,{{&quot;Quality&quot;, type text}, {&quot;Sort Order&quot;, Int64.Type}})&#13;&#10;in&#13;&#10;    #&quot;Changed Type&quot;]]&gt;&lt;/Formula&gt;&lt;IsParameterQuery xsi:nil=&quot;true&quot; /&gt;&lt;IsDirectQuery xsi:nil=&quot;true&quot; /&gt;&lt;/Query&gt;&lt;/Items&gt;&lt;/Mashup&gt;</odc:PowerQueryMashupData>
+ </odc:OfficeDataConnection>
+</xml>
+<style>
+<!--
+    .ODCDataSource
+    {
+    behavior: url(dataconn.htc);
+    }
+-->
+</style>
+ 
+</head>
+
+<body onload='init()' scroll=no leftmargin=0 topmargin=0 rightmargin=0 style='border: 0px'>
+<table style='border: solid 1px threedface; height: 100%; width: 100%' cellpadding=0 cellspacing=0 width='100%'> 
+  <tr> 
+    <td id=tdName style='font-family:arial; font-size:medium; padding: 3px; background-color: threedface'> 
+      &nbsp; 
+    </td> 
+     <td id=tdTableDropdown style='padding: 3px; background-color: threedface; vertical-align: top; padding-bottom: 3px'>
+
+      &nbsp; 
+    </td> 
+  </tr> 
+  <tr> 
+    <td id=tdDesc colspan='2' style='border-bottom: 1px threedshadow solid; font-family: Arial; font-size: 1pt; padding: 2px; background-color: threedface'>
+
+      &nbsp; 
+    </td> 
+  </tr> 
+  <tr> 
+    <td colspan='2' style='height: 100%; padding-bottom: 4px; border-top: 1px threedhighlight solid;'> 
+      <div id='pt' style='height: 100%' class='ODCDataSource'></div> 
+    </td> 
+  </tr> 
+</table> 
+
+  
+<script language='javascript'> 
+
+function init() { 
+  var sName, sDescription; 
+  var i, j; 
+  
+  try { 
+    sName = unescape(location.href) 
+  
+    i = sName.lastIndexOf(".") 
+    if (i>=0) { sName = sName.substring(1, i); } 
+  
+    i = sName.lastIndexOf("/") 
+    if (i>=0) { sName = sName.substring(i+1, sName.length); } 
+
+    document.title = sName; 
+    document.getElementById("tdName").innerText = sName; 
+
+    sDescription = document.getElementById("docprops").innerHTML; 
+  
+    i = sDescription.indexOf("escription>") 
+    if (i>=0) { j = sDescription.indexOf("escription>", i + 11); } 
+
+    if (i>=0 && j >= 0) { 
+      j = sDescription.lastIndexOf("</", j); 
+
+      if (j>=0) { 
+          sDescription = sDescription.substring(i+11, j); 
+        if (sDescription != "") { 
+            document.getElementById("tdDesc").style.fontSize="x-small"; 
+          document.getElementById("tdDesc").innerHTML = sDescription; 
+          } 
+        } 
+      } 
+    } 
+  catch(e) { 
+
+    } 
+  } 
+</script> 
+
+</body> 
+ 
+</html>
